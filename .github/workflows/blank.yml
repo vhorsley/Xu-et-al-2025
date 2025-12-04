@@ -1,0 +1,2058 @@
+
+
+#Glutamine scores for diabetic data from GEO: GSE245703
+
+View(final_seurat_harmony)
+table(Idents(final_seurat_harmony))
+View(final_seurat_harmony)
+Neutrophils <- WhichCells(final_seurat_harmony, idents = "Neutrophil")
+table(final_seurat_harmony$condition[Neutrophil])
+table(final_seurat_harmony$Condition[Neutrophil])
+table(Idents(final_seurat_harmony), final_seurat_harmony$Condition)
+VlnPlot(final_seurat_harmony, features = "Gls")
+VlnPlot(final_seurat_harmony, features = "GLS")
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0)
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0, split.by = "Condition")
+FeaturePlot(final_seurat_harmony, features = "GLS", split.by = "Condition")+ viridis::scale_color_viridis()
+# Set the active identity to your condition
+Idents(final_seurat_harmony) <- "condition"
+# Run differential expression for just your gene of interest
+FindMarkers(
+object = final_seurat_harmony,
+ident.1 = "NDFU",
+ident.2 = "DFU",
+features = "GLS"
+)
+Table(Idents(final_seurat_harmony))
+table(Idents(final_seurat_harmony))
+Idents(final_seurat_harmony) <- "Condition"
+table(Idents(final_seurat_harmony))
+FindMarkers(
+object = final_seurat_harmony,
+ident.1 = "NDFU",
+ident.2 = "DFU",
+features = "GLS"
+)
+FindMarkers(
+object = final_seurat_harmony,
+ident.1 = "NDFU",
+ident.2 = "DFU",
+features = "GLS", group.by = "seurat_clusters"
+)
+FindMarkers(
+object = final_seurat_harmony,
+ident.1 = "NDFU",
+ident.2 = "DFU",
+features = "GLS", group.by = "seurat_clusters"
+)
+gene_of_interest <- "GLS"
+results_list <- list()
+# Loop over all clusters
+for (clust in levels(Idents(final_seurat_harmony))) {
+# Subset to this cluster
+seurat_sub <- subset(final_seurat_harmony, idents = seurat_clusters)
+# Set the identity to condition
+Idents(seurat_sub) <- "Condition"
+# Run differential test for this gene only
+res <- FindMarkers(
+seurat_sub,
+ident.1 = "NDFU",
+ident.2 = "DFU",
+features = gene_of_interest
+)
+# Store with cluster label
+results_list[[clust]] <- data.frame(
+cluster = clust,
+res
+)
+}
+colnames(seurat_object@meta.data)
+colnames(final_seurat_harmony@meta.data)
+gene_of_interest <- "GeneName"  # replace with your gene symbol
+results_list <- list()
+for (clust in levels(Idents(final_seurat_harmony))) {
+sub_obj <- subset(final_seurat_harmony, idents = clust)
+Idents(sub_obj) <- "Condition"  # compare by condition within this cluster
+res <- FindMarkers(
+sub_obj,
+ident.1 = "Cntl",
+ident.2 = "cKO",
+features = gene_of_interest
+)
+results_list[[clust]] <- data.frame(
+cluster = clust,
+res
+)
+}
+gene_of_interest <- "GLS"  # replace with your gene symbol
+results_list <- list()
+for (clust in levels(Idents(final_seurat_harmony))) {
+sub_obj <- subset(final_seurat_harmony, idents = clust)
+Idents(sub_obj) <- "Condition"  # compare by condition within this cluster
+res <- FindMarkers(
+sub_obj,
+ident.1 = "NDFU",
+ident.2 = "DFU",
+features = gene_of_interest
+)
+results_list[[clust]] <- data.frame(
+cluster = clust,
+res
+)
+}
+Idents(sub_obj) <- "Condition"
+unique(final_seurat_harmony$Condition)
+gene_of_interest <- "GeneName"  # replace with your gene
+results_list <- list()
+# Make sure identities are clusters
+Idents(final_seurat_harmony) <- "seurat_clusters"
+for (clust in levels(Idents(final_seurat_harmony))) {
+# Subset to this cluster
+sub_obj <- subset(final_seurat_harmony, idents = clust)
+# Set identities to condition
+Idents(sub_obj) <- "Condition"
+# Get conditions in this cluster
+conds <- unique(Idents(sub_obj))
+# Only run if both DFU and NDFU are present
+if (all(c("DFU", "NDFU") %in% conds)) {
+res <- FindMarkers(
+sub_obj,
+ident.1 = "DFU",
+ident.2 = "NDFU",
+features = gene_of_interest
+)
+results_list[[clust]] <- data.frame(cluster = clust, res)
+} else {
+results_list[[clust]] <- data.frame(
+cluster = clust,
+note = "Only one condition present"
+)
+}
+}
+gene_of_interest <- "GLS"  # replace with your gene
+results_list <- list()
+# Make sure identities are clusters
+Idents(final_seurat_harmony) <- "seurat_clusters"
+for (clust in levels(Idents(final_seurat_harmony))) {
+# Subset to this cluster
+sub_obj <- subset(final_seurat_harmony, idents = clust)
+# Set identities to condition
+Idents(sub_obj) <- "Condition"
+# Get conditions in this cluster
+conds <- unique(Idents(sub_obj))
+# Only run if both DFU and NDFU are present
+if (all(c("DFU", "NDFU") %in% conds)) {
+res <- FindMarkers(
+sub_obj,
+ident.1 = "DFU",
+ident.2 = "NDFU",
+features = gene_of_interest
+)
+results_list[[clust]] <- data.frame(cluster = clust, res)
+} else {
+results_list[[clust]] <- data.frame(
+cluster = clust,
+note = "Only one condition present"
+)
+}
+}
+gene_of_interest <- "GLS"  # exact match
+Idents(final_seurat_harmony) <- "seurat_clusters"
+results_list <- list()
+for (clust in levels(Idents(final_seurat_harmony))) {
+sub_obj <- subset(final_seurat_harmony, idents = clust)
+Idents(sub_obj) <- "Condition"
+conds <- unique(Idents(sub_obj))
+if (all(c("DFU", "NDFU") %in% conds)) {
+res <- FindMarkers(
+sub_obj,
+ident.1 = "DFU",
+ident.2 = "NDFU",
+features = gene_of_interest,
+logfc.threshold = 0,
+min.pct = 0
+)
+if (nrow(res) > 0) {
+results_list[[clust]] <- data.frame(cluster = clust, res)
+} else {
+results_list[[clust]] <- data.frame(cluster = clust, note = "Gene not detected or below thresholds")
+}
+} else {
+results_list[[clust]] <- data.frame(cluster = clust, note = "Only one condition present")
+}
+}
+results_all <- do.call(rbind, results_list)
+results_all
+VlnPlot(final_seurat_harmony, features = "GLS")
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0, split.plot = "Condition")
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0, group.by = "Condition")
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0, split.by = "Condition")
+final_seurat_harmony$Condition <- factor(
+final_seurat_harmony$Condition,
+levels = c("NDFU", "DFU")  # desired order
+)
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0, split.by = "Condition")
+Idents(final_seurat_harmony) <- "seurat_clusters"
+cluster_condition_counts <- table(Idents(final_seurat_harmony), final_seurat_harmony$Condition)
+cluster_condition_counts
+cluster_condition_prop <- prop.table(cluster_condition_counts, margin = 1)  # proportion per cluster
+cluster_condition_prop
+library(dplyr)
+library(tidyr)
+clusterprop <- as.data.frame(cluster_condition_prop)
+colnames(clusterprop) <- c("Cluster", "Condition", "Proportion")
+library(ggplot2)
+ggplot(clusterprop, aes(x = Cluster, y = Proportion, fill = Condition)) +
+geom_bar(stat = "identity", position = "fill") +  # position="fill" ensures stacked proportion bars
+ylab("Proportion of cells") +
+theme_classic() +
+scale_fill_manual(values = c("DFU" = "red", "NDFU" = "blue"))  # optional custom colors
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 1, split.plot = "Condition")
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0, split.plot = "Condition")
+Idents(final_seurat_harmony) <- "Condition"
+VlnPlot(final_seurat_harmony, features = "GLS", pt.size = 0, split.plot = "Condition")
+VlnPlot(
+object = final_seurat_harmony,
+features = "GLS",
+pt.size = 0,
+split.by = "Condition"
+)
+Idents(final_seurat_harmony) <- "seurat_clusters"
+VlnPlot(
+object = final_seurat_harmony,
+features = "GLS",
+pt.size = 1,
+split.by = "Condition"
+)
+Idents(final_seurat_harmony) <- "seurat_clusters"
+VlnPlot(
+object = final_seurat_harmony,
+features = "GLS",
+pt.size = 0.25,
+split.by = "Condition"
+)
+FeaturePlot(final_seurat_harmony, features = "GLS", split.by = "Condition")
+VlnPlot(
+object = final_seurat_harmony,
+features = "GOT2",
+pt.size = 0,
+split.by = "Condition")
+VlnPlot(
+object = final_seurat_harmony,
+features = "GPT2",
+pt.size = 0,
+split.by = "Condition")
+VlnPlot(
+object = final_seurat_harmony,
+features = c("GPT2","GLUD1", "GLUL", "GSS", "GCLC", "GCLM", "GOT1", "SLC1A5", "SLC38A1", "SLC38A3")
+pt.size = 0,
+VlnPlot(
+object = final_seurat_harmony,
+features = c("GPT2","GLUD1", "GLUL", "GSS", "GCLC", "GCLM", "GOT1", "SLC1A5", "SLC38A1", "SLC38A3")
+pt.size = 0,split.by = "Condition")
+VlnPlot(
+object = final_seurat_harmony,
+features = c("GPT2","GLUD1", "GLUL", "GSS", "GCLC", "GCLM", "GOT1", "SLC1A5", "SLC38A1", "SLC38A3")
+pt.size = 0, split.by = "Condition")
+VlnPlot(
+object = final_seurat_harmony,
+features = c("GPT2","GLUD1", "GLUL", "GSS", "GCLC", "GCLM", "GOT1", "SLC1A5", "SLC38A1", "SLC38A3"),
+pt.size = 0,
+split.by = "Condition"
+)
+# Example: compare ConditionA vs ConditionB in cell type "Macrophage"
+Idents(final_seurat_harmony) <- "seurat_clusters"
+# Subset to one cell type
+mac_subset <- subset(final_seurat_harmony, idents = "Macrophage")
+final_seurat_harmony@meta.data[["seurat_clusters"]]
+Idents(final_seurat_harmony) %>% levels()
+mac_subset <- subset(final_seurat_harmony, idents = "Monocyte/Macrophage")
+Idents(mac_subset) <- "Condition"
+markers_mac <- FindMarkers(
+mac_subset,
+ident.1 = "ConditionA",
+ident.2 = "ConditionB",
+features = c("GPT2","GLUD1","GLUL","GSS","GCLC","GCLM","GOT1","SLC1A5","SLC38A1","SLC38A3")
+)
+Idents(mac_subset) <- "Condition"
+markers_mac <- FindMarkers(
+mac_subset,
+ident.1 = "NDFU",
+ident.2 = "DFU",
+features = c("GPT2","GLUD1","GLUL","GSS","GCLC","GCLM","GOT1","SLC1A5","SLC38A1","SLC38A3")
+)
+View(markers_mac)
+markers_mac <- FindMarkers(
+mac_subset,
+ident.1 = "NDFU",
+ident.2 = "DFU"
+)
+write.csv(markers_mac, file = "NDFU vs DFU macrophages DE")
+library(Seurat)
+library(ggplot2)
+final_seurat_harmony <- readRDS("~/Library/CloudStorage/OneDrive-YaleUniversity/Horsley Laboratory - Valerie backup - Documents/Valerie backup/Research/diabetes data R/final_seurat_harmony.rds")
+VlnPlot(final_seurat_harmony, features = "CXCR2", pt.size = 0)
+VlnPlot(final_seurat_harmony, features = "CXCR2", pt.size = 0, split.by = "Condition")
+VlnPlot(final_seurat_harmony, features = "CXCR1", pt.size = 0, split.by = "Condition")
+FeaturePlot(final_seurat_harmony, features = "CXCR1", pt.size = 0, split.by = "Condition")
+FeaturePlot(final_seurat_harmony, features = "CXCR2", pt.size = 0, split.by = "Condition")
+FeaturePlot(final_seurat_harmony, features = "CXCL8", pt.size = 0, split.by = "Condition")
+DimPlot(final_seurat_harmony)
+View(final_seurat_harmony)
+DoHeatmap(final_seurat_harmony, features = c("CXCL1", "CXCL2"), group.by = "Condition")
+DoHeatmap(final_seurat_harmony, features = c("CXCL1", "CXCL2", "GLS"), group.by = "Condition")
+DoHeatmap(final_seurat_harmony, features = c("CXCL1", "CXCL2", "LY6G"), group.by = "Condition")
+DoHeatmap(final_seurat_harmony, features = c("CXCL1", "CXCL2", "MPO"), group.by = "Condition")
+DoHeatmap(final_seurat_harmony, features = c("CXCL1", "CXCL2", "ELANE"), group.by = "Condition")
+DoHeatmap(final_seurat_harmony, features = c("CXCL1", "CXCL2", "S100A8"), group.by = "Condition")
+neutrophils <- subset(final_seurat_harmony, idents = "Neutrophils")
+Idents(final_seurat_harmony) <- "seurat_clusters"
+neutrophils <- subset(final_seurat_harmony, idents = "Neutrophils")
+Idents(final_seurat_harmony)
+neutrophil <- subset(final_seurat_harmony, idents = "Neutrophil")
+DoHeatmap(neutrophil, features = c("CXCL1", "CXCL2", "S100A8"), group.by = "Condition")
+VlnPlot(neutrophil, features = c("CXCL1", "CXCL2", "S100A8"), group.by = "Condition")
+VlnPlot(neutrophil, features = c("CXCL1", "CXCL2", "S100A8", "MPO"), group.by = "Condition")
+VlnPlot(neutrophil, features = c("CXCL1", "CXCL2", "S100A8", "CEACAM8"), group.by = "Condition")
+VlnPlot(neutrophil, features = c("CXCR1", "CXCR2", "S100A8"), group.by = "Condition")
+VlnPlot(neutrophil, features = c("GLS"), group.by = "Condition")
+VlnPlot(final_seurat_harmony, features = c("GLS"), group.by = "Condition")
+VlnPlot(final_seurat_harmony, features = c("GLS"), group.by = "Condition", split.by = "seurat_clusters")
+VlnPlot(final_seurat_harmony, features = c("GLS"), group.by = "seurat_clusters", split.by = "Condition")
+VlnPlot(final_seurat_harmony, features = c("GLS"), group.by = "seurat_clusters", split.by = "Condition", pt.size = 0)
+glutamine_genes <- list(c("SLC1A5","SLC7A5","GLS","GLS2","GLUD1","GLUD2",
+"GOT1","GOT2","CAD","CTPS1","CTPS2","ASNS","GLUL"))
+final_seurat_harmony <- AddModuleScore(final_seurat_harmony, features = glutamine_genes, name = "GlutamineScore")
+VlnPlot(seurat_obj, features = "GlutamineScore1", group.by = "Condition")
+VlnPlot(final_seurat_harmony, features = "GlutamineScore1", group.by = "condition")
+VlnPlot(final_seurat_harmony, features = "GlutamineScore1", group.by = "Condition")
+VlnPlot(final_seurat_harmony, features = "GlutamineScore1", group.by = "Condition", pt.size = 0)
+FeaturePlot(final_seurat_harmony, features = "GlutamineScore1", group.by = "Condition")
+FeaturePlot(final_seurat_harmony, features = "GlutamineScore1", split.by = "Condition")
+library(viridis)
+FeaturePlot(final_seurat_harmony, features = "GlutamineScore1", split.by = "Condition") + viridis::scale_color_viridis()
+FeaturePlot(
+final_seurat_harmony,
+features = "GlutamineScore1",
+split.by = "Condition",
+cols = viridis::viridis(100)
+)
+df <- FetchData(final_seurat_harmony, vars = c("UMAP_1", "UMAP_2", "GlutamineScore1", "Condition"))
+ggplot(df, aes(x = UMAP_1, y = UMAP_2, color = GlutamineScore1)) +
+geom_point(size = 0.5) +
+facet_wrap(~Condition) +
+scale_color_viridis(option = "viridis") +
+theme_minimal()
+VlnPlotfinal_seurat_harmony,
+VlnPlot(final_seurat_harmony,features = "GlutamineScore1",
++     split.by = "Condition",
+VlnPlot(final_seurat_harmony,features = "GlutamineScore1", split.by = "Condition") + scale_color_viridis(option = "viridis") + theme_minimal()
+VlnPlot(final_seurat_harmony,features = "GlutamineScore1", split.by = "Condition", pt.size = 0) + scale_color_viridis(option = "viridis") + theme_minimal()
+FindMarkers(neutrophil, ident.1 = "DFU", ident.2 = "NDFU", features = glutamine_genes)
+Idents(neutrophil) <- "Condition"
+FindMarkers(neutrophil, ident.1 = "DFU", ident.2 = "NDFU", features = glutamine_genes)
+levels(neutrophil)
+markers <- FindMarkers(
+neutrophil,
+ident.1 = "DFU",
+ident.2 = "NDFU",
+features = glutamine_genes
+)
+glutamine_genes <- c("SLC1A5","SLC7A5","GLS","GLS2","GLUD1","GLUD2",
+"GOT1","GOT2","CAD","CTPS1","CTPS2","ASNS","GLUL")
+glutamine_genes[!glutamine_genes %in% rownames(neutrophil)]
+dfu_vals  <- neutrophil$GlutamineScore1[neutrophil$Condition == "DFU"]
+# AddModuleScore creates a new column in metadata
+neutrophil <- AddModuleScore(
+neutrophil,
+features = list(glutamine_genes),
+name = "GlutamineScore"
+)
+dfu_vals  <- neutrophil$GlutamineScore1[neutrophil$Condition == "DFU"]
+ndfu_vals <- neutrophil$GlutamineScore1[neutrophil$Condition == "NDFU"]
+# Wilcoxon rank-sum test (non-parametric)
+wilcox.test(dfu_vals, ndfu_vals)
+# Or a simple t-test if distribution is ~normal
+t.test(dfu_vals, ndfu_vals)
+library(ggpubr)
+ggboxplot(neutrophil@meta.data, x = "Condition", y = "GlutamineScore1",
+fill = "Condition", palette = "viridis") +
+stat_compare_means(method = "wilcox.test")
+# Make a data.frame from your Seurat metadata
+plot_data <- final_seurat_harmony@meta.data
+ggboxplot(
+plot_data,
+x = "Condition",
+y = "GlutamineScore1",   # your module score column
+fill = "Condition",
+palette = "viridis"
+) +
+stat_compare_means(
+method = "wilcox.test",
+label = "p.format"     # shows formatted p-value on the plot
+)
+df <- FetchData(
+final_seurat_harmony,
+vars = c("GlutamineScore1", "Condition", "seurat_clusters")
+)
+ggviolin(
+df,
+x = "Condition",
+y = "GlutamineScore1",
+fill = "Condition",
+palette = "viridis",
+add = "boxplot"
+) +
+facet_wrap(~seurat_clusters) +   # one panel per cluster
+stat_compare_means(
+method = "wilcox.test",
+label = "p.format"
+)
+View(df)
+mean(dfu_vals)   # average GlutamineScore in DFU
+mean(ndfu_vals)  # average GlutamineScore in NDFU
+summary_table <- df %>%
+group_by(seurat_clusters) %>%
+summarise(
+median_DFU  = median(GlutamineScore1[Condition == "DFU"]),
+median_NDFU = median(GlutamineScore1[Condition == "NDFU"]),
+p_value     = wilcox.test(
+GlutamineScore1[Condition == "DFU"],
+GlutamineScore1[Condition == "NDFU"]
+)$p.value,
+.groups = "drop"
+) %>%
+mutate(
+signif = case_when(
+p_value < 0.0001 ~ "****",
+p_value < 0.001  ~ "***",
+p_value < 0.01   ~ "**",
+p_value < 0.05   ~ "*",
+TRUE             ~ "ns"
+)
+)
+library(dplyr)
+summary_table <- df %>%
+group_by(seurat_clusters) %>%
+summarise(
+median_DFU  = median(GlutamineScore1[Condition == "DFU"]),
+median_NDFU = median(GlutamineScore1[Condition == "NDFU"]),
+p_value     = wilcox.test(
+GlutamineScore1[Condition == "DFU"],
+GlutamineScore1[Condition == "NDFU"]
+)$p.value,
+.groups = "drop"
+) %>%
+mutate(
+signif = case_when(
+p_value < 0.0001 ~ "****",
+p_value < 0.001  ~ "***",
+p_value < 0.01   ~ "**",
+p_value < 0.05   ~ "*",
+TRUE             ~ "ns"
+)
+)
+summary_table
+high_cells <- subset(neutrophil, subset = GlutamineScore1 > quantile(GlutamineScore1, 0.75))
+AverageExpression(high_cells, features = glutamine_genes)
+high_cells <- subset(final_seurat_harmony, subset = GlutamineScore1 > quantile(GlutamineScore1, 0.75))
+AverageExpression(high_cells, features = glutamine_genes)
+ggviolin(
+df,
+x = "Condition",
+y = "GlutamineScore1",
+fill = "Condition",
+palette = "viridis",
+add = "boxplot"
+) +
+facet_wrap(~seurat_clusters) +           # one facet per cluster
+stat_compare_means(
+method = "wilcox.test",
+label = "p.format"
+) +
+theme_minimal() +
+labs(
+y = "Glutamine Metabolism Score",
+x = "Condition",
+title = "Glutamine Metabolism Activity per Cluster"
+)
+averageexpression <- AverageExpression(high_cells, features = glutamine_genes)
+View(averageexpression)
+max(final_seurat_harmony$GlutamineScore1, na.rm = TRUE)
+which_max <- which.max(final_seurat_harmony$GlutamineScore1)
+final_seurat_harmony$GlutamineScore1[which_max]       # the max score
+rownames(final_seurat_harmony@meta.data)[which_max]   # cell ID
+View(averageexpression)
+expr_matrix <- averageexpression$RNA
+write.csv(expr_df, file = "high_cells_averageexpressionglutmet.csv", row.names = FALSE)
+write.csv(expr_matrix, file = "high_cells_averageexpressionglutmet.csv", row.names = FALSE)
+df <- final_seurat_harmony@meta.data %>%
+select(GlutamineScore1, Condition, seurat_clusters)
+glutamine_summary <- df %>%
+group_by(seurat_clusters, Condition) %>%
+summarise(
+mean_score   = mean(GlutamineScore1, na.rm = TRUE),
+median_score = median(GlutamineScore1, na.rm = TRUE),
+min_score    = min(GlutamineScore1, na.rm = TRUE),
+max_score    = max(GlutamineScore1, na.rm = TRUE),
+n_cells      = n(),
+.groups = "drop"
+)
+View(glutamine_summary)
+glutamine_summary <- df %>%
+group_by(seurat_clusters, Condition) %>%
+summarise(
+mean_score   = mean(GlutamineScore1, na.rm = TRUE),
+median_score = median(GlutamineScore1, na.rm = TRUE),
+min_score    = min(GlutamineScore1, na.rm = TRUE),
+max_score    = max(GlutamineScore1, na.rm = TRUE),
+n_cells      = n(),
+.groups = "drop"
+)
+View(glutamine_summary)
+View(high_cells)
+View(glutamine_genes)
+glutamine_genes
+
+#CellChat
+DotPlot(merged_seurat_obj_wound,
+features = genes_to_plot,
+group.by = "seurat_clusters",
+split.by = "condition") +
+scale_color_viridis_c(option = "viridis", direction = 1, name = "Expression") +  # Apply viridis color scale with label
+theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  # Rotate x-axis labels
+labs(title = "Gene Expression and Percent Expressed",  # Add title
+x = "Genes",
+y = "Clusters") +
+theme_minimal()
+DotPlot(merged_seurat_obj_wound,
+features = genes_to_plot,
+group.by = "seurat_clusters",
+split.by = "condition") +
+cols = discrete_viridis +
+theme(axis.text.x = element_text(angle = 90, hjust = 1)) +  # Rotate x-axis labels
+labs(title = "Gene Expression and Percent Expressed",  # Add title
+x = "Genes",
+y = "Clusters") +
+theme_minimal()
+DotPlot(merged_seurat_obj_wound,
+features = genes_to_plot,
+group.by = "seurat_clusters",
+split.by = "condition")
+DotPlot(merged_seurat_obj_wound,
+features = c( "Ccl2", "Ccl3", "Ccl4", "Ccl6", "Ccl7", "Ccl9","Cxcl2", "Cxcl3", "Ilb", "S100a8", "S100a9"),
+group.by = "seurat_clusters",
+split.by = "condition",
+cols = viridis(100))
+DotPlot(merged_seurat_obj_wound, features = c("Ccl9","Ccl7", "Ccl6", "Ccl2", "Ccl3", "Ccl4", "Cxcl2", "Cxcl3"), group.by = "seurat_clusters", split.by = "condition", cols = 4)
+features = c("Ccl9", "Ccl7", "Ccl6", "Ccl2", "Ccl3", "Ccl4", "Cxcl2", "Cxcl3"),
+DotPlot(merged_seurat_obj_wound,
+features = c("Ccl9", "Ccl7", "Ccl6", "Ccl2", "Ccl3", "Ccl4", "Cxcl2", "Cxcl3"),
+group.by = "seurat_clusters",
+split.by = "condition",
+cols = plasma(3))  # Use the 'plasma' palette with 3 colors
+VlnPlot(merged_seurat_obj_wound, features = genes_to_plot) + scale_color_viridis(option = "viridis", direction = 1)
+VlnPlot(merged_seurat_obj_wound, features = genes_to_plot, pt.size = 0) + scale_color_viridis(option = "viridis", direction = 1)
+VlnPlot(merged_seurat_obj_wound, features = genes_to_plot, split.by = "condition", group.by = "seurat_clusters", pt.size = 0) + scale_color_viridis(option = "viridis", direction = 1)
+mac1_seuratobj <- subset((merged_seurat_obj_wound))
+mac1_seuratobj <- subset(merged_seurat_obj_wound, Idents = "Neutrophil2")
+mac1_seuratobj <- subset(merged_seurat_obj_wound, idents = "Neutrophil 2")
+View(merged_seurat_obj_wound)
+mac1_seuratobj <- subset(merged_seurat_obj_wound, idents = seurat_clusters = "Neutrophil 2")
+mac1_seuratobj <- subset(merged_seurat_obj_wound, seurat_clusters = "Neutrophil 2")
+merged_seurat_obj_wound <- SetIdent(merged_seurat_obj_wound, value = "seurat_clusters")
+# Subset the Seurat object to include only the "Neutrophil 2" cluster
+mac1_seuratobj <- subset(merged_seurat_obj_wound, idents = "Neutrophil 2")
+VlnPlot(mac1_seuratobj, features = genes_to_plot, split.by = "condition", group.by = "seurat_clusters", pt.size = 0)
+FeaturePlot(merged_seurat_obj_wound, features = genes_to_plot, split.by = "condition", group.by = "seurat_clusters")
+FeaturePlot(merged_seurat_obj_wound, features = genes_to_plot, split.by = "condition")
+FeaturePlot(merged_seurat_obj_wound, features = c("Ccl4", "Cxcl2"), split.by = "condition")
+FeaturePlot(merged_seurat_obj_wound, features = c("Cxcr2", "Ccr1"), split.by = "condition")
+FeaturePlot(merged_seurat_obj_wound, features = c("Cxcr2", "Ccr1"), split.by = "condition") + scale_color_viridis_c(option = "viridis", direction = 1, name = "Expression") +  # Apply viridis color scale with label
+)
+FeaturePlot(merged_seurat_obj_wound, features = c("Cxcr2", "Ccr1"), split.by = "condition") + scale_color_viridis_c(option = "viridis"))
+FeaturePlot(merged_seurat_obj_wound, features = c("Cxcr2", "Ccr1"), split.by = "condition") + scale_color_viridis_c(option = "viridis")
+(FeaturePlot(merged_seurat_obj_wound, features = c("Cxcr2", "Ccr1"), split.by = "condition")) + scale_color_viridis_c(option = "viridis")
+FeaturePlot(merged_seurat_obj_wound, features = c("Cc6", "Ccl4"), split.by = "condition")
+FeaturePlot(merged_seurat_obj_wound, features = c("Ccl6", "Ccl4"), split.by = "condition")
+FeaturePlot(merged_seurat_obj_wound,
+features = c("Ccl6", "Ccl4"),
+split.by = "condition") + scale_color_viridis_c()
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = c("Ccl6", "Ccl4"),
+split.by = "condition")
+# Modify the plot to use the Viridis color scale
+feature_plot <- feature_plot + scale_color_viridis_c()
+# Display the plot
+print(feature_plot)
+library(patchwork)
+plots <- feature_plot + scale_color_viridis_c()
+# Apply the Viridis color scale to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c()
+}
+# Combine the plots back together
+combined_plot <- wrap_plots(plots)
+# Display the combined plot
+print(combined_plot)
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c() + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+# Calculate global min and max for the features across all conditions
+features <- c("Ccl6", "Ccl4")
+min_val <- min(merged_seurat_obj_wound@assays$RNA@data[features, ])
+min_val <- min(GetAssayData(merged_seurat_obj_wound, slot = "data")[features, ])
+max_val <- max(GetAssayData(merged_seurat_obj_wound, slot = "data")[features, ])
+# Create the FeaturePlot
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = features,
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+DimPlot(merged_seurat_obj_wound, split.by = condition )
+DimPlot(merged_seurat_obj_wound, split.by = "condition" )
+current_clusters <- Idents(merged_seurat_obj_wound)
+new_clusters <- as.character(current_clusters)
+new_clusters[current_clusters %in% c("Neutrophil 1", "Neutrophil 2")] <- "Neutrophil"
+new_clusters[current_clusters %in% c("Macrophage 1", "Macrophage 2", "Macrophage 3", "Macrophage 4", "Macrophage 5")] <- "Macrophage"
+DimPlot(merged_seurat_obj_wound, split.by = "condition" )
+merged_seurat_obj_wound <- AddMetaData(merged_seurat_obj_wound, metadata = new_clusters, col.name = "combined_clusters")
+Idents(merged_seurat_obj_wound) <- "combined_clusters"
+# View the new cluster identities
+table(Idents(merged_seurat_obj_wound))
+DimPlot(merged_seurat_obj_wound, split.by = "condition" )
+Idents(merged_seurat_obj_wound) <- current_clusters
+new_clusters <- as.character(current_clusters)
+new_clusters[current_clusters %in% c("Neutrophil 1", "Macrophage 3")] <- "Neutrophil"
+new_clusters[current_clusters %in% c("Macrophage 1", "Macrophage 2", "Neutrophil 2", "Macrophage 4", "Macrophage 5")] <- "Macrophage"
+merged_seurat_obj_wound <- AddMetaData(merged_seurat_obj_wound, metadata = new_clusters, col.name = "combined_clusters")
+Idents(merged_seurat_obj_wound) <- "combined_clusters"
+DimPlot(merged_seurat_obj_wound, split.by = "condition" )
+DimPlot(merged_seurat_obj_wound, split.by = "condition" ) + scale_color_viridis_c() + theme(legend.position = "right")
+DimPlot(merged_seurat_obj_wound, split.by = "condition" ) + viridis::cividis() + theme(legend.position = "right")
+DimPlot(merged_seurat_obj_wound, split.by = "condition" ) + viridis::cividis(1) + theme(legend.position = "right")
+dim_plot <- DimPlot(merged_seurat_obj_wound, reduction = "umap", group.by = "seurat_clusters")
+# Add Viridis color scale
+dim_plot <- dim_plot + scale_color_viridis_d() + theme(legend.position = "right")
+# Display the plot
+print(dim_plot)
+dim_plot <- DimPlot(merged_seurat_obj_wound, split.by = "condition")
+# Add Viridis color scale
+dim_plot <- dim_plot + scale_color_viridis_d() + theme(legend.position = "right")
+# Display the plot
+print(dim_plot)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Ccl4",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+FeaturePlot(merged_seurat_obj_wound,
+features = "Ccl2",
+split.by = "condition") + scale_color_viridis_c(limits = c(min_val, max_val))
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Ccl2",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+print(plots)
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+FeaturePlot(merged_seurat_obj_wound,
+features = "Ccl2",
+split.by = "condition") + scale_color_viridis_c(limits = c(min_val, max_val))
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Ccl6",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+print(plots)
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+DimPlot(merged_seurat_obj_wound, split.by = "seurat_clusters")
+DimPlot(merged_seurat_obj_wound)
+DimPlot(merged_seurat_obj_wound) + scale_color_viridis_c(1)
+dim_plot <- DimPlot(merged_seurat_obj_wound, reduction = "umap", group.by = "seurat_clusters")
+# Add Viridis color scale for discrete data
+dim_plot <- dim_plot + scale_color_viridis_d() + theme(legend.position = "right")
+print(dim_plot)
+dim_plot <- DimPlot(merged_seurat_obj_wound, reduction = "umap", group.by = "combined_clusters")
+# Add Viridis color scale for discrete data
+dim_plot <- dim_plot + scale_color_viridis_d() + theme(legend.position = "right")
+print(dim_plot)
+dim_plot <- DimPlot(merged_seurat_obj_wound, reduction = "umap", group.by = "combined_clusters", split.by = "condition")
+# Add Viridis color scale for discrete data
+dim_plot <- dim_plot + scale_color_viridis_d() + theme(legend.position = "right")
+print(dim_plot)
+all_markers_combinedclusters <- FindAllMarkers(merged_seurat_obj_wound, min.pct = 0.25)
+View(all_markers_combinedclusters)
+all_markers_combinedclusters <- FindAllMarkers(
+object = merged_seurat_obj_wound,
+only.pos = TRUE,  # Only return positive markers
+min.pct = 0.25,   # Minimum percentage of cells expressing the gene in either cluster
+logfc.threshold = 0.25  # Minimum log fold change difference
+)
+top_markers_combinedclusters <- all_markers %>%
+group_by(cluster) %>%
+top_n(n = 20, wt = avg_log2FC)
+library(dplyr)
+top_markers <- all_markers %>%
+group_by(cluster) %>%
+top_n(n = 20, wt = avg_log2FC)
+top_markers <- all_markers_combinedclusters %>%
+group_by(cluster) %>%
+top_n(n = 20, wt = avg_log2FC)
+expression_data <- FetchData(merged_seurat_obj_wound, vars = top_genes)
+# Get the list of top marker genes
+top_genes <- top_markers$gene
+# Extract the expression data for these genes
+expression_data <- FetchData(merged_seurat_obj_wound, vars = top_genes)
+# Create the heatmap
+heatmap_plot <- DoHeatmap(merged_seurat_obj_wound, features = top_genes, group.by = "combined_clusters")
+# Display the heatmap
+print(heatmap_plot)
+cell_counts <- table(Idents(merged_seurat_obj_wound))
+# Calculate the proportions
+cell_proportions <- prop.table(cell_counts)
+# Convert to data frame for easier manipulation
+cell_proportions_df <- as.data.frame(cell_proportions)
+colnames(cell_proportions_df) <- c("Cluster", "Proportion")
+# View the cell proportions
+print(cell_proportions_df)
+# Calculate cell counts per cluster and condition
+cell_counts <- metadata %>%
+group_by(condition, your_cluster_column) %>%
+summarise(count = n()) %>%
+ungroup()
+metadata <- merged_seurat_obj_wound@meta.data
+cell_counts <- metadata %>%
+group_by(condition, your_cluster_column) %>%
+summarise(count = n()) %>%
+ungroup()
+cell_counts <- metadata %>%
+group_by(condition, combined_clusters) %>%
+summarise(count = n()) %>%
+ungroup()
+# Calculate total cell counts per condition
+total_counts <- metadata %>%
+group_by(condition) %>%
+summarise(total_count = n()) %>%
+ungroup()
+cell_proportions <- cell_counts %>%
+left_join(total_counts, by = "condition") %>%
+mutate(proportion = count / total_count)
+# View the cell proportions
+print(cell_proportions)
+ggplot(cell_proportions, aes(x = condition, y = proportion, fill = your_cluster_column)) +
+geom_bar(stat = "identity", position = "dodge") +
+theme_minimal() +
+labs(title = "Cell Proportions per Condition and Cluster",
+x = "Condition",
+y = "Proportion") +
+scale_fill_viridis_d(name = "Cluster")
+ggplot(cell_proportions, aes(x = condition, y = proportion, fill = combined_clusters) +
+geom_bar(stat = "identity", position = "dodge") +
+theme_minimal() +
+labs(title = "Cell Proportions per Condition and Cluster",
+x = "Condition",
+y = "Proportion") +
+scale_fill_viridis_d(name = "Cluster")
+)
+View(merged_seurat_obj_wound)
+ggplot(cell_proportions, aes(x = condition, y = proportion, fill = combined_clusters) +
+geom_bar(stat = "identity", position = "dodge") +
+theme_minimal() +
+labs(title = "Cell Proportions per Condition and Cluster",
+x = "Condition",
+y = "Proportion") +
+scale_fill_viridis_d(name = "Cluster")
+)
+ggplot(cell_proportions, aes(x = condition, y = proportion, fill = combined_clusters)) +
+geom_bar(stat = "identity", position = "dodge") +
+theme_minimal() +
+labs(title = "Cell Proportions per Condition and Cluster",
+x = "Condition",
+y = "Proportion") +
+scale_fill_viridis_d(name = "Cluster")
+# Subset to macrophage cells
+macrophages <- subset(merged_seurat_obj_wound, idents = "Macrophage")
+# Set the identity class to the condition
+Idents(macrophages) <- "condition"
+# Perform differential expression analysis between two conditions
+de_gene_24v48 <- FindMarkers(macrophages, ident.1 = "24hr", ident.2 = "48")
+# View the top differentially expressed genes
+head(de_genes)
+de_gene_24v48 <- FindMarkers(macrophages, ident.1 = "48", ident.2 = "72")
+de_gene_24v48 <- FindMarkers(macrophages, ident.1 = "24hr", ident.2 = "48")
+de_gene_48v72 <- FindMarkers(macrophages, ident.1 = "48", ident.2 = "72")
+View(de_gene_24v48)
+write.csv(de_gene_24v48, file = "de_gene_24v48.csv", row.names = TRUE)
+write.csv(de_gene_24v48, file = "de_gene_48v72.csv", row.names = TRUE)
+write.csv(de_gene_48v72, file = "de_gene_48v72.csv", row.names = TRUE)
+de_gene_24v72 <- FindMarkers(macrophages, ident.1 = "24hr", ident.2 = "72")
+write.csv(de_gene_48v72, file = "de_gene_48v72.csv", row.names = TRUE)
+write.csv(de_gene_24v72, file = "de_gene_24v72.csv", row.names = TRUE)
+FeaturePlot(merged_seurat_obj_wound,
+features = "Ms4a2",
+split.by = "condition") + scale_color_viridis_c(limits = c(min_val, max_val))
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Ms4a1",
+split.by = "condition")
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+print(plots)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Ms4a2",
+split.by = "condition")
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+print(plots)
+FeaturePlot(merged_seurat_obj_wound,
+features = "Ccl2",
+split.by = "condition") + scale_color_viridis_c(limits = c(min_val, max_val))
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+print(plots)
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Ccl4",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Ms4a2",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Cxcl10",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Cd74",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+install.packages("BiocManager")
+BiocManager::install(c("DiffBind", "DESeq2"))
+install.packages("BiocManager")
+library(ChipSeeker)
+install.packages("BiocManager")
+BiocManager::install(c("DiffBind", "ChIPseeker", "TxDb.Hsapiens.UCSC.hg19.knownGene", "org.Hs.eg.db"))
+install.packages("BiocManager")
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = "Glul",
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+VlnPlot(merged_seurat_obj_wound, features = "Glul", group.by = "seurat_clusters", split.by = "condition")
+VlnPlot(merged_seurat_obj_wound, features = "Glul", group.by = "seurat_clusters", split.by = "condition", pt.size = 0)
+VlnPlot(merged_seurat_obj_wound, features = "Glul", group.by = "combined_clusters", split.by = "condition", pt.size = 0)
+VlnPlot(merged_seurat_obj_wound, features = "Ccl4", group.by = "seurat_clusters", split.by = "condition", pt.size = 0)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = c("Glul","Ccl4", "S100a8")
+split.by = "condition")
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = c("Glul","Ccl4", "S100a8"),
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = c("Glul","Ccl4", "S100a8")
+split.by = "condition")
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = c("Glul","Ccl4", "S100a8"),
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+feature_plot <- FeaturePlot(merged_seurat_obj_wound,
+features = c("Glul","Ccl2", "S100a8"),
+split.by = "condition")
+# Extract the individual plots
+plots <- feature_plot + scale_color_viridis_c(limits = c(min_val, max_val))
+# Apply the Viridis color scale with consistent limits and legend to each plot
+for (i in seq_along(plots)) {
+plots[[i]] <- plots[[i]] + scale_color_viridis_c(limits = c(min_val, max_val)) + theme(legend.position = "right")
+}
+# Combine the plots back together and add a common legend
+combined_plot <- wrap_plots(plots) + plot_layout(guides = 'collect')
+# Display the combined plot
+print(combined_plot)
+DotPlot(merged_seurat_obj_wound, features = c("Ccl2","Ccl6", "Glul"), group.by = "seurat_clusters", split.by = "condition", cols = 4)
+DotPlot(merged_seurat_obj_wound, features = c("Ccl2","Ccl6", "Glul"), group.by = "seurat_clusters", split.by = "condition", cols = c("red", "white", "blue")
+)
+VlnPlot(merged_seurat_obj_wound, features = c("Ccl2","Ccl6", "Glul"), group.by = "seurat_clusters", split.by = "condition", cols = c("red", "white", "blue")
+)
+VlnPlot(merged_seurat_obj_wound, features = c("Ccl2","Ccl6", "Glul"), group.by = "seurat_clusters", split.by = "condition", cols = c("red", "white", "blue"), pt.size = 0))
+VlnPlot(merged_seurat_obj_wound, features = c("Ccl2","Ccl6", "Glul"), group.by = "seurat_clusters", split.by = "condition", cols = c("red", "white", "blue"), pt.size = 0)
+VlnPlot(merged_seurat_obj_wound, features = c("Ccl2","Ccl6", "Glul"), group.by = "combined_clusters", split.by = "condition", cols = c("red", "white", "blue"), pt.size = 0)
+View(merged_seurat_obj_wound)
+24hrSeurat <- subset(merged_seurat_obj_wound, subset = condition == "24hr")
+Seurat24hr <- subset(merged_seurat_obj_wound, subset = condition == "24hr")
+Seurat36hr <- subset(merged_seurat_obj_wound, subset = condition == "36")
+merged_seurat_obj_wound@meta.data[["condition"]]
+Seurat36hr <- subset(merged_seurat_obj_wound, subset = condition == "36hr")
+unique_conditions <- unique(merged_seurat_obj_wound@meta.data$condition)
+# Display the unique condition labels
+print(unique_conditions)
+Seurat48hr <- subset(merged_seurat_obj_wound, subset = condition == "48")
+Seurat72hr <- subset(merged_seurat_obj_wound, subset = condition == "72")
+cellchat24 <- createCellChat(object = Seurat24hr, meta = meta_data24, group.by = "combined_clusters")
+library(CellChat)
+cellchat24 <- createCellChat(object = Seurat24hr, meta = meta_data24, group.by = "combined_clusters")
+metadata24hr <- Seurat24hr@meta.data
+metadata48hr <- Seurat48hr@meta.data
+metadata72hr <- Seurat72hr@meta.data
+cellchat24 <- createCellChat(object = Seurat24hr, meta = metadata24hr, group.by = "combined_clusters")
+cellchat24 <- createCellChat(object = Seurat24hr, group.by = "combined_clusters")
+cellchat24 <- createCellChat(object = Seurat24hr, # this is my seurat obj
+group.by = "combined_clusters")
+Seurat24hr <- NormalizeData(Seurat24hr)
+DefaultAssay(Seurat24hr) <- "RNA"
+Seurat24hr <- NormalizeData(Seurat24hr)
+cellchat24 <- createCellChat(object = Seurat24hr, # this is my seurat obj
++                             group.by = "combined_clusters")
+cellchat24 <- createCellChat(object = Seurat24hr, # this is my seurat obj
+group.by = "combined_clusters")
+DefaultAssay(Seurat48hr) <- "RNA"
+cellchat48 <- createCellChat(object = Seurat48hr, # this is my seurat obj
+group.by = "combined_clusters")
+cellchat72 <- createCellChat(object = Seurat72hr, # this is my seurat obj
+group.by = "combined_clusters")
+DefaultAssay(Seurat72hr) <- "RNA"
+cellchat72 <- createCellChat(object = Seurat72hr, # this is my seurat obj
+group.by = "combined_clusters")
+CellChatDB <- CellChatDB.mouse
+cellchat24@DB <- CellChatDB
+cellchat48@DB <- CellChatDB
+cellchat72@DB <- CellChatDB
+cellchat24 <- subsetData(cellchat24) # This step is necessary even if using the whole database
+cellchat48 <- subsetData(cellchat48) # This step is necessary even if using the whole database
+cellchat72 <- subsetData(cellchat72)
+cellchat24 <- identifyOverExpressedGenes(cellchat24)
+cellchat48 <- identifyOverExpressedGenes(cellchat48)
+cellchat72 <- identifyOverExpressedGenes(cellchat72)
+cellchat24 <- identifyOverExpressedInteractions(cellchat24)
+cellchat48 <- identifyOverExpressedGenes(cellchat48)
+cellchat72 <- identifyOverExpressedGenes(cellchat72)
+cellchat24 <- computeCommunProb(cellchat24)
+cellchat48 <- computeCommunProb(cellchat48)
+cellchat24 <- computeCommunProbPathway(cellchat24)
+cellchat48 <- computeCommunProbPathway(cellchat48)
+cellchat72 <- computeCommunProb(cellchat72)
+savehistory("~/Desktop/control wound bed R files/cell chat files/cellchat.Rhistory")
+
+#apoptosis analysis
+View(results_list)
+gene_results <- dplyr::bind_rows(results_list)
+View(gene_results)
+write.csv(gene_results, file = "apoptosisTING.csv")
+VlnPlot(obj_filtered, features = genes_of_interest, split.by = "sample")
+VlnPlot(obj_filtered, features = genes_of_interest, split.by = "sample", pt.size = 0)
+View(markers)
+library(dplyr)
+# Combine results with cluster info
+gene_results <- bind_rows(results_list, .id = "cluster")
+# Sort by cluster and descending log2 fold change
+gene_results_sorted <- gene_results %>%
+arrange(cluster, desc(avg_log2FC))
+# View the sorted results
+View(gene_results_sorted)
+DimPlot(obj_filtered, reduction = "wnn.umap", label = TRUE, group.by = "sample")
+DotPlot(obj_filtered, features = genes_of_interest)
+DotPlot(obj_filtered, features = genes_of_interest, split.by = "sample")
+obj_filtered <- subset(
+obj_filtered,
+subset = nFeature_RNA > 200 & nFeature_RNA < 5000 &
+nCount_RNA > 500 & nCount_RNA < 25000 &
+percent.mt < 10
+)
+DotPlot(obj_filtered, features = genes_of_interest, split.by = "sample")
+DimPlot(obj_filtered, reduction = "wnn.umap", label = TRUE, group.by = "sample")
+obj_filtered <- subset(
+obj_filtered,
+subset = nFeature_RNA > 100 & nFeature_RNA < 1500 &
+nCount_RNA > 100 & nCount_RNA < 15000 &
+percent.mt < 25
+)
+DimPlot(obj_filtered, reduction = "wnn.umap", label = TRUE, group.by = "sample")
+obj_filtered,
+obj_filtered,
+obj_filtered <- subset(
+obj_filtered,
+subset = nFeature_RNA > 20 & nFeature_RNA < 5000 &
+nCount_RNA > 50 & nCount_RNA < 25000 &
+percent.mt < 10
+)
+DimPlot(obj_filtered, reduction = "wnn.umap", label = TRUE, group.by = "sample")
+obj_filtered <- subset(
+obj_filtered,
+subset = nFeature_RNA > 0 & nFeature_RNA < 1500 &
+nCount_RNA > 0 & nCount_RNA < 15000 &
+percent.mt < 25
+)
+DimPlot(obj_filtered, reduction = "wnn.umap", label = TRUE, group.by = "sample")
+obj_filtered <- subset(
+obj,
+subset = nFeature_RNA > 0 & nFeature_RNA < 1500 &
+nCount_RNA > 0 & nCount_RNA < 15000 &
+percent.mt < 5
+)
+DimPlot(obj_filtered, reduction = "wnn.umap", label = TRUE, group.by = "sample")
+obj_filtered <- subset(
+obj,
+subset = nFeature_RNA > 100 & nFeature_RNA < 1500 &
+nCount_RNA > 0 & nCount_RNA < 15000 &
+percent.mt < 20
+)
+# ---- 1) RNA preprocessing (PCA) ----
+DefaultAssay(obj) <- rna.assay
+DefaultAssay(obj_filtered) <- "RNA"
+obj_filtered <- NormalizeData(obj_filtered)
+obj_filtered <- FindVariableFeatures(obj_filtered, nfeatures = 3000)
+obj_filtered <- ScaleData(obj_filtered)
+obj_filtered <- RunPCA(obj_filtered, npcs = 50, verbose = FALSE)
+# ---- 2) ATAC/Peaks preprocessing (LSI) ----
+DefaultAssay(obj_filtered) <- "Peaks"
+obj_filtered <- RunTFIDF(obj_filtered)
+obj_filtered <- FindTopFeatures(obj_filtered, min.cutoff = "q0")
+obj_filtered <- RunSVD(obj_filtered, n = 50)   # produces "lsi" reduction
+# ---- 3) Build WNN graph ----
+obj_filtered <- FindMultiModalNeighbors(
+obj_filtered,
+reduction.list = list("pca", "lsi"),
+dims.list      = list(1:30, 2:30), # skip LSI1 (technical depth)
+modality.weight.name = "RNA_ATAC.weight"
+)
+# ---- 4) Joint UMAP + clustering ----
+obj_filtered <- RunUMAP(
+obj_filtered,
+nn.name        = "weighted.nn",
+reduction.name = "wnn.umap",
+reduction.key  = "wnnUMAP_"
+)
+obj_filtered <- FindClusters(
+obj_filtered,
+graph.name = "wsnn",
+algorithm = 3,
+resolution = 0.8
+)
+DimPlot(obj_filtered, reduction = "wnn.umap", group.by = "sample", label = TRUE)
+DimPlot(obj_filtered, reduction = "wnn.umap", group.by = "seurat_clusters", label = TRUE)
+obj_filtered <- subset(
+obj,
+obj_filtered <- subset(
+obj,
+subset = hb_ratio < 0.05 & blacklist_ratio < 0.1
+)
+)
+obj_filtered <- subset(
+obj,
+subset = hb_ratio < 0.05 & blacklist_ratio < 0.1
+)
+colnames(obj@meta.data)
+# Example: compute hb_ratio
+hb_genes <- c("Hba1", "Hba2", "Hbb")  # example hemoglobin genes
+obj[["hb_counts"]] <- PercentageFeatureSet(obj, features = hb_genes)
+obj[["hb_counts"]] <- PercentageFeatureSet(obj, features = hb_genes)
+# See if your hemoglobin genes are present
+hb_genes <- c("Hba1", "Hba2", "Hbb")  # example genes
+hb_genes %in% rownames(obj)
+hb_genes <- c("Hba-a1", "Hba-a2", "Hbb-bt", "Hbb-bs")
+hb_genes %in% rownames(obj)
+# Calculate percentage of hemoglobin genes
+obj[["hb_counts"]] <- PercentageFeatureSet(obj, features = correct_hb_genes)
+# Calculate percentage of hemoglobin genes
+obj[["hb_counts"]] <- PercentageFeatureSet(obj, features = hb_genes)
+obj@meta.data$hb_ratio <- obj@meta.data$hb_counts / obj$nCount_RNA
+obj[["hb_counts"]] <- PercentageFeatureSet(obj, features = hb_genes)
+obj@meta.data$hb_ratio <- obj@meta.data$hb_counts / obj$nCount_RNA
+obj_filtered <- subset(obj, subset = hb_ratio < 0.05)
+library(reticulate)
+# Use your Python environment with Scrublet installed
+use_python("/usr/bin/python3")  # adjust to your python path
+scrublet <- import("scrublet")
+library(reticulate)
+py_config()
+library(reticulate)
+virtualenv_create("scrublet_env", python = "/usr/bin/python3")
+virtualenv_install("scrublet_env", packages = c("scrublet", "numpy", "scipy"), pip = TRUE)
+virtualenv_install("scrublet_env", packages = c("scrublet", "numpy", "scipy"), pip = TRUE)
+library(reticulate)
+# Create virtual environment (if not already created)
+virtualenv_create("scrublet_env", python = "/usr/bin/python3")
+# Install packages using pip
+virtualenv_install("scrublet_env", packages = c("scrublet", "numpy", "scipy"), ignore_installed = TRUE)
+use_virtualenv("scrublet_env", required = TRUE)
+library(Seurat)
+library(DoubletFinder)
+install.packages(DoubletFinder)
+obj_filtered <- subset(
+obj,
+subset = percent.mt < 0.2 & nFeature_RNA > 100 & nFeature_RNA < 10000 & nCount_RNA < 10000
+)
+DimPlot(obj_filtered)
+obj_filtered <- subset(obj, subset = hb_ratio < 0.05)
+library(Seurat)
+# Assuming your Seurat object is called 'obj' and has assays "RNA" and "Peaks" (ATAC)
+# Add nCount for RNA and Peaks to metadata if not already present
+obj$RNA_nCount <- obj[["RNA"]]@counts %>% colSums()
+library(Seurat)
+# Calculate total counts per cell for RNA and ATAC assays
+obj$RNA_nCount <- colSums(GetAssayData(obj, assay = "RNA", layer = "counts"))
+obj$ATAC_nCount <- colSums(GetAssayData(obj, assay = "Peaks", layer = "counts"))
+# Filter cells with 100 <= nCount <= 10000 for both RNA and ATAC
+obj_filtered <- subset(
+obj,
+subset = RNA_nCount >= 100 & RNA_nCount <= 10000 &
+ATAC_nCount >= 100 & ATAC_nCount <= 10000
+)
+# Inspect filtered object
+obj_filtered
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.2
+max_hb <- 0.05
+max_blacklist <- 0.1
+min_frac_peaks <- 15
+min_tss <- 2
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb &
+blacklist_ratio <= max_blacklist &
+frac_reads_in_peaks >= min_frac_peaks &
+TSS.enrichment >= min_tss &
+complexity >= min_complexity
+)
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.2
+max_hb <- 0.05
+max_blacklist <- 0.1
+min_frac_peaks <- 15
+min_tss <- 2
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb &
+frac_reads_in_peaks >= min_frac_peaks &
+TSS.enrichment >= min_tss &
+complexity >= min_complexity
+)
+library(Seurat)
+# 1. Calculate total ATAC fragments per cell
+total_fragments <- colSums(GetAssayData(obj, assay = "Peaks", layer = "counts"))
+# 2. Calculate FRiP (fraction of reads in peaks)
+# Assuming 'total_fragments_in_peaks' is the same as the counts in the Peaks assay
+# (This is standard if Peaks assay only contains peak counts)
+obj$frac_reads_in_peaks <- total_fragments / total_fragments  # will be 1, if Peaks = total counts
+# If you have a separate total fragments per cell (including outside peaks), you can do:
+# obj$frac_reads_in_peaks <- total_fragments_in_peaks / total_fragments_all
+# Now you can filter
+min_frac_peaks <- 0.15  # as fraction (not 15%)
+obj_filtered <- subset(obj, subset = frac_reads_in_peaks >= min_frac_peaks)
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.2
+max_hb <- 0.05
+max_blacklist <- 0.1
+min_frac_peaks <- 15
+min_tss <- 2
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb &
+frac_reads_in_peaks >= min_frac_peaks &
+TSS.enrichment >= min_tss &
+complexity >= min_complexity
+)
+library(Seurat)
+library(Signac)
+# Make sure the Peaks assay is the default assay
+DefaultAssay(obj) <- "Peaks"
+# Compute TSS enrichment per cell
+obj <- TSSEnrichment(
+object = obj,
+fast = FALSE  # set TRUE for faster computation if desired
+)
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.2
+max_hb <- 0.05
+max_blacklist <- 0.1
+min_frac_peaks <- 15
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb &
+frac_reads_in_peaks >= min_frac_peaks &
+complexity >= min_complexity
+)
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.2
+max_hb <- 0.05
+max_blacklist <- 0.1
+min_frac_peaks <- 15
+min_tss <- 2
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb &
+frac_reads_in_peaks >= min_frac_peaks &
+)
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.2
+max_hb <- 0.05
+max_blacklist <- 0.1
+min_frac_peaks <- 15
+min_tss <- 2
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb &
+frac_reads_in_peaks >= min_frac_peaks
+)
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.2
+max_hb <- 0.05
+max_blacklist <- 0.1
+min_frac_peaks <- 15
+min_tss <- 2
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb
+)
+# Inspect filtered object
+obj_filtered
+library(Seurat)
+# Assuming your object already has these metadata columns:
+# - percent.mt           (mitochondrial ratio)
+# - hb_ratio             (hemoglobin ratio)
+# - blacklist_ratio      (blacklist sites ratio)
+# - frac_reads_in_peaks  (fraction of reads in peaks)
+# - TSS.enrichment       (TSS enrichment score)
+# - complexity           (log10(nFeature_RNA / nCount_RNA) or precomputed)
+# Set QC thresholds
+max_mito <- 0.1
+max_hb <- 0.05
+min_frac_peaks <- 15
+min_tss <- 2
+min_complexity <- 0.65
+# Filter cells
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= max_hb &
+frac_reads_in_peaks >= min_frac_peaks
+)
+obj_filtered <- subset(obj, subset = hb_ratio < 0.05)
+obj$complexity <- log10(obj$nFeature_RNA / obj$nCount_RNA)
+library(Seurat)
+# 1. Calculate total ATAC fragments per cell
+total_fragments <- colSums(GetAssayData(obj, assay = "Peaks", layer = "counts"))
+# 2. Calculate FRiP (fraction of reads in peaks)
+# Assuming 'total_fragments_in_peaks' is the same as the counts in the Peaks assay
+# (This is standard if Peaks assay only contains peak counts)
+obj$frac_reads_in_peaks <- total_fragments / total_fragments  # will be 1, if Peaks = total counts
+# If you have a separate total fragments per cell (including outside peaks), you can do:
+# obj$frac_reads_in_peaks <- total_fragments_in_peaks / total_fragments_all
+# Now you can filter
+min_frac_peaks <- 0.15  # as fraction (not 15%)
+obj_filtered <- subset(obj, subset = frac_reads_in_peaks >= min_frac_peaks)
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= 0.05 &
+frac_reads_in_peaks >= 15 &
+TSS.enrichment >= 2 &
+complexity >= 0.65
+)
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= max_mito &
+hb_ratio <= 0.05 &
+frac_reads_in_peaks >= 15 &
+complexity >= 0.65
+)
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= 0.2 &
+hb_ratio <= 0.05 &
+frac_reads_in_peaks >= 15 &
+complexity >= 0.65
+)
+summary(obj$percent.mt)
+summary(obj$hb_ratio)
+summary(obj$frac_reads_in_peaks)
+summary(obj$complexity)
+obj_filtered <- subset(
+obj,
+subset = percent.mt <= 20 &
+hb_ratio <= 0.05 &
+# frac_reads_in_peaks >= 0.15 &  # optional, all are 1
+complexity >= -1.5
+)
+DimPlot(obj_filtered, )
+library(Seurat)
+library(Signac)
+# Assuming your Seurat object is called 'obj'
+# RNA assay: "RNA", ATAC assay: "Peaks"
+# ----------------------------
+# 1. Normalize gene expression with SCTransform, regressing out mitochondrial variation
+# ----------------------------
+DefaultAssay(obj) <- "RNA"
+obj <- SCTransform(
+obj,
+assay = "RNA",
+vars.to.regress = "percent.mt",
+verbose = FALSE
+)
+install.packages("glmGamPoi")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
+BiocManager::install("glmGamPoi")
+library(glmGamPoi)
+obj <- SCTransform(
+obj,
+assay = "RNA",
+vars.to.regress = "percent.mt",
+verbose = FALSE,
+vst.flavor = "v2",
+method = "poisson"
+)
+obj_filtered <- SCTransform(
+obj_filtered,
+assay = "RNA",
+vars.to.regress = "percent.mt",
+verbose = FALSE,
+vst.flavor = "v2",
+method = "poisson"
+)
+# 2. Linear dimensional reduction on RNA using PCA
+# ----------------------------
+obj <- RunPCA(
+obj,
+assay = "SCT",
+verbose = FALSE
+)
+# 2. Linear dimensional reduction on RNA using PCA
+# ----------------------------
+obj_filtered <- RunPCA(
+obj_filtered,
+assay = "SCT",
+verbose = FALSE
+)
+# 3. Normalize ATAC data using TF-IDF
+# ----------------------------
+DefaultAssay(obj) <- "Peaks"
+obj <- RunTFIDF(obj)
+# ----------------------------
+# 4. Linear dimensional reduction on ATAC using SVD (LSI)
+# ----------------------------
+obj <- RunSVD(
+obj,
+assay = "Peaks",
+reduction.key = "LSI_",
+reduction.name = "lsi"
+)
+# ----------------------------
+# 5. Compute weighted nearest neighbor (WNN) graph combining RNA (PCA) and ATAC (LSI)
+# ----------------------------
+obj <- FindMultiModalNeighbors(
+obj,
+reduction.list = list("pca", "lsi"),
+dims.list = list(1:50, 1:50)
+)
+# ----------------------------
+# 6. Multimodal clustering using WNN
+# ----------------------------
+obj <- FindClusters(
+obj,
+graph.name = "wsnn",
+algorithm = 3,  # Leiden clustering
+resolution = 0.8
+)
+# ----------------------------
+# 7. Run UMAP for visualization (optional)
+# ----------------------------
+obj <- RunUMAP(
+obj,
+nn.name = "weighted.nn",
+reduction = "wnn.umap",
+verbose = FALSE
+)
+DimPlot(obj_filtered, reduction = "wnn.umap", group.by = "seurat_clusters", label = TRUE)
+DimPlot(obj_filtered, reduction = "wnn.umap", group.by = "sample")
+VlnPlot(obj_filtered, features = genes_of_interest, split.by = "sample")
+VlnPlot(obj_filtered, features = genes_of_interest, split.by = "sample", pt.size = 0)
+View(markers)
+
+#Metabolic analysis of scRNA VlnPlot(SeuratMac, features = c("Arg1","Ccl2", "Il1b", "Cd163", pt.size = 0)
+)
+VlnPlot(SeuratMac, features = c("Arg1","Ccl2", "Il1b", "Cd163"), pt.size = 0)
+VlnPlot(SeuratMac, features = c("Arg1","Ccl3", "Il1b", "Cd163"), pt.size = 0)
+FeaturePlot(SeuratMac, features = c("Arg1","Ccl3", "Il1b", "Cd163"))
+FeaturePlot(SeuratMac, features = c("Arg1","Ccl3", "Il1b", "Cd163")) + scale_color_viridis_c(option = "C", direction = 1) +  # Apply a continuous color scale
+)
+FeaturePlot(SeuratMac, features = c("Arg1","Ccl3", "Il1b", "Cd163")) + scale_color_viridis_c(option = "C", direction = 1)
+(FeaturePlot(SeuratMac, features = c("Arg1","Ccl3", "Il1b", "Cd163"))) + scale_color_viridis_c(option = "C", direction = 1)
+FeaturePlot(SeuratMac, features = "Arg1") + scale_color_viridis_c(option = "C", direction = 1)
+FeaturePlot(SeuratMac, features = "Got1") + scale_color_viridis_c(option = "C", direction = 1)
+FeaturePlot(SeuratMac, features = "Idh1") + scale_color_viridis_c(option = "C", direction = 1)
+FeaturePlot(SeuratMac, features = "Gls") + scale_color_viridis_c(option = "C", direction = 1)
+FeaturePlot(SeuratMac, features = "Aldoa") + scale_color_viridis_c(option = "C", direction = 1)
+FeaturePlot(SeuratMac, features = "Pgk1") + scale_color_viridis_c(option = "C", direction = 1)
+Idents(SeuratMac) <- "seurat_clusters"
+VlnPlot(SeuratMac, features = genesofinterest, pt.size = 0)
+genesofinterestTCA <- c('Aco1', 'Aco2', 'Aco2', 'Aco2', 'Aco2', 'Col6a1', 'Cs', 'Cs', 'Cs', 'Csl', 'Csl', 'Dlat', 'Dlst', 'Dlst', 'Dlst', 'Dlst', 'Fh1', 'Fh1', 'Idh1', 'Idh2', 'Idh3a', 'Idh3a', 'Idh3a', 'Idh3b', 'Idh3b', 'Idh3b', 'Idh3g', 'Idh3g', 'Idh3g', 'Mdh1', 'Mdh1', 'Mdh1b', 'Mdh1b', 'Mdh2', 'Mrps36', 'Ndp', 'Ndufs4', 'Ogdh', 'Ogdh', 'Ogdhl', 'Ogdhl', 'Pdha1', 'Pdha2', 'Pdhb', 'Sdha', 'Sdha', 'Sdhaf2', 'Sdhb', 'Sdhb', 'Sdhc', 'Sdhc', 'Sdhd', 'Sdhd', 'Sdhd', 'Sdhd', 'Sucla2', 'Sucla2', 'Sucla2', 'Suclg1', 'Suclg1', 'Suclg1', 'Suclg2')
+# Generate the VlnPlot
+VlnPlot(SeuratMac, features = genesofinterestTCA, pt.size = 0)
+SeuratMac <- AddModuleScore(SeuratMac, features = list(genesofinterest), name = 'GeneScore_glu')
+genes_in_seurat <- intersect(genesofinterest, rownames(SeuratMac))
+print(genes_in_seurat)
+merged_seurat_obj_wound <- AddModuleScore(merged_seurat_obj_wound, features = list(genesofinterest), name = 'GeneScore_glu')
+# Compute the gene score using the 'data' layer
+merged_seurat_obj_wound <- AddModuleScore(
+merged_seurat_obj_wound,
+features = list(genesofinterest),
+name = 'GeneScore_glu',
+layer = "data"  # Specify the layer to use for score calculation
+)
+# Check available layers for the RNA assay
+SeuratMac <- merged_seurat_obj_wound  # assuming merged_seurat_obj_wound is the object in use
+assay_data_layers <- SeuratMac[["RNA"]]@assays
+# List the layers for the "RNA" assay
+layers <- SeuratMac[["RNA"]]@assay$layer
+# Access available layers in the RNA assay of the Seurat object
+names(SeuratMac[["RNA"]]@assays)
+SeuratMac[["RNA"]]@counts      # For raw counts
+slotNames(SeuratMac[["RNA"]])
+names(SeuratMac[["RNA"]]@layers)
+# Add module score for data.1 layer
+merged_seurat_obj_wound <- AddModuleScore(
+merged_seurat_obj_wound,
+features = list(genesofinterest),
+name = 'GeneScore_glu_data1',
+assay = "RNA",      # Specify the assay to use
+layer = "data.1"    # Use the data.1 layer
+)
+# Extract data from each layer
+data_layer_1 <- SeuratMac[["RNA"]]@layers[["data.1"]]
+data_layer_2 <- SeuratMac[["RNA"]]@layers[["data.2"]]
+data_layer_3 <- SeuratMac[["RNA"]]@layers[["data.Gene Expression.3"]]
+# Combine data by averaging across the layers
+combined_data <- (data_layer_1 + data_layer_2 + data_layer_3) / 3
+# Check dimensions of each data layer
+dim(data_layer_1)
+dim(data_layer_2)
+dim(data_layer_3)
+# Find the common cells across all layers
+common_cells <- Reduce(intersect, list(colnames(data_layer_1), colnames(data_layer_2), colnames(data_layer_3)))
+# Subset the layers to only include common cells
+data_layer_1 <- data_layer_1[, common_cells]
+data_layer_2 <- data_layer_2[, common_cells]
+data_layer_3 <- data_layer_3[, common_cells]
+# Combine the layers by averaging
+combined_data <- (data_layer_1 + data_layer_2 + data_layer_3) / 3
+# Add the combined data as a new layer
+SeuratMac[["RNA"]]@layers[["combined_data"]] <- combined_data
+combined_data <- as.matrix(combined_data)
+# Create a new assay with combined data
+combined_assay <- CreateAssayObject(counts = combined_data)
+# Assign column names to the combined data matrix
+colnames(combined_data) <- common_cells
+# Create a new assay with combined data
+combined_assay <- CreateAssayObject(counts = combined_data)
+# Ensure you are using the correct cell names from your Seurat object
+cell_names <- colnames(SeuratMac)
+# Assign these cell names to the combined data matrix
+colnames(combined_data) <- cell_names
+# Number of cells in SeuratMac
+n_cells_seurat <- length(colnames(SeuratMac))
+# Number of cells in combined_data
+n_cells_combined_data <- ncol(combined_data)
+# Print both numbers to check for a mismatch
+n_cells_seurat
+n_cells_combined_data
+DEenrichRPlot(
+SeuratMac,
+ident.1 = NULL,
+ident.2 = NULL,
+balanced = TRUE,
+logfc.threshold = 0.25,
+assay = NULL,
+max.genes,
+test.use = "wilcox",
+p.val.cutoff = 0.05,
+cols = NULL,
+enrich.database = NULL,
+num.pathway = 10,
+return.gene.list = FALSE,
+...
+)
+expr_data <- SeuratMac@assays$RNA@data
+View(expression_data24)
+library(clusterProfiler)
+BiocManager::install("clusterProfiler", version = "3.8")
+# Set clusters as identities
+Idents(SeuratMac) <- "seurat_clusters"
+# Differential expression between cluster 0 and cluster 1
+de_results0v1 <- FindMarkers(SeuratMac, ident.1 = 0, ident.2 = 1)
+SeuratMac@meta.data[["seurat_clusters"]]
+DimPlot(SeuratMac, reduction = "umap")
+View(seurat_subset)
+SeuratMac <- subset(merged_seurat_obj_wound, subset = merged_clusters == "Macrophages")
+SeuratMac <- NormalizeData(SeuratMac)
+SeuratMac <- FindVariableFeatures(SeuratMac)
+SeuratMac <- JoinLayers(SeuratMac)
+anchors <- FindIntegrationAnchors(SeuratMac)
+SeuratMac <- IntegrateData(anchorset = anchors, dims = 1:15)
+SeuratMac <- ScaleData(SeuratMac)
+SeuratMac <- RunPCA(SeuratMac)
+SeuratMac <- RunUMAP(SeuratMac, dims = 1:15)
+SeuratMac <-FindNeighbors(SeuratMac, dims = 1:15)
+SeuratMac <- FindClusters(SeuratMac, resolution = 0.2)
+SeuratMac <- FindClusters(SeuratMac, resolution = 0.025)
+de_gene_0v1_Mac24_72 <- FindMarkers(SeuratMac, ident.1 = "0", ident.2 = "1")
+View(de_gene_0v1_Mac24_72)
+write.csv(de_gene_0v1_Mac24_72, file = "de_gene_0v1_Mac24_72.csv", row.names = TRUE)
+FeaturePlot(SeuratMac, features = "Gnai1")
+FeaturePlot(SeuratMac, features = "Pdgfrb")
+FeaturePlot(SeuratMac, features = "Sim1")
+FeaturePlot(SeuratMac, features = "Dlc1")
+FeaturePlot(SeuratMac, features = "Got1")
+VlnPlot(SeuratMac, features = genesofinterest)
+VlnPlot(SeuratMac, features = genesofinterest, pt.size = 0)
+VlnPlot(SeuratMac, features = genesofinterestTCA, pt.size = 0)
+VlnPlot(SeuratMac, features = genesofinterest_glucose, pt.size = 0)
+genesofinterestTCA <- c('Aco1', 'Aco2', 'Col6a1', 'Cs', 'Csl', 'Dlat', 'Dlst',  'Fh1', 'Idh1', 'Idh2', 'Idh3a', 'Idh3b', 'Idh3g',  'Mdh1', 'Mdh1b', 'Mdh2', 'Mrps36', 'Ndp', 'Ndufs4', 'Ogdh', 'Ogdhl', 'Pdha1', 'Pdha2', 'Pdhb', 'Sdha', 'Sdhaf2', 'Sdhb',  'Sdhc',  'Sdhd', 'Sucla2','Suclg1','Suclg2')
+VlnPlot(SeuratMac, features = genesofinterestTCA, pt.size = 0)
+genesofinterestTCA.1 <- c('Aco1', 'Aco2', 'Col6a1', 'Cs', 'Csl', 'Dlat', 'Dlst',  'Fh1', 'Idh1', 'Idh2', 'Idh3a', 'Idh3b', 'Idh3g',  'Mdh1', 'Mdh1b', 'Mdh2', 'Mrps36')
+VlnPlot(SeuratMac, features = genesofinterestTCA.1, pt.size = 0)
+genesofinterestTCA.2 <- c('Ndp', 'Ndufs4', 'Ogdh', 'Ogdhl', 'Pdha1', 'Pdha2', 'Pdhb', 'Sdha', 'Sdhaf2', 'Sdhb',  'Sdhc',  'Sdhd', 'Sucla2','Suclg1','Suclg2')
+VlnPlot(SeuratMac, features = genesofinterestTCA.2, pt.size = 0)
+markers_mac <- FindAllMarkers(SeuratMac)
+VlnPlot(SeuratMac, features = "Got1", pt.size = 0)
+View(markers_mac)
+VlnPlot(SeuratMac, features = "Lyve1", pt.size = 0)
+VlnPlot(SeuratMac, features = "Timd4", pt.size = 0)
+VlnPlot(SeuratMac, features = "Sox4", pt.size = 0)
+VlnPlot(SeuratMac, features = "Epx", pt.size = 0)
+VlnPlot(SeuratMac, features = "Cd1a", pt.size = 0)
+VlnPlot(SeuratMac, features = "Cd207", pt.size = 0)
+VlnPlot(SeuratMac, features = "Acod1", pt.size = 0)
+dot_plot <- DotPlot(SeuratMac, features = c(genesofinterest, genesofinterest_glucose, genesofinterestTCA.1, genesofinterestTCA.2)) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = c(genesofinterest)) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+warnings()
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = genesofinterest) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+# Display the dot plot
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = c("Gls", "Got1", "Idh1", "Glud1", "Gapdh", "Hk1", "Hk2", "Slc2a1")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+DefaultAssay(SeuratMac) <- "RNA"
+dot_plot <- DotPlot(SeuratMac, features = c("Gls", "Got1", "Idh1", "Glud1", "Gapdh", "Hk1", "Hk2", "Slc2a1")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = c("Gls", "Got1", "Idh1", "Glud1", "Gapdh", "Hk1", "Hk2", "Slc2a1", "Arg1", "Igf1")) +
++ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = c("Gls", "Got1", "Idh1", "Glud1", "Gapdh", "Hk1", "Hk2", "Slc2a1", "Arg1", "Igf1"))
++ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+dot_plot <- DotPlot(SeuratMac, features = c("Gls", "Got1", "Idh1", "Glud1", "Gapdh", "Hk1", "Hk2", "Slc2a1", "Arg1", "Igf1"))+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = c("Gls", "Got1", "Idh1", "Glud1", "Gapdh", "Hk1", "Hk2", "Slc2a1", "Arg1", "Tnf"))+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+library(Seurat)
+library(ggplot2)
+library(viridis)
+View(seurat_subset_assay)
+View(SeuratMac)
+FeaturePlot(SeuratMac, features = "Sgms2")
+FeaturePlot(SeuratMac, features = "Sgms2", split.by = "condition")
+View(merged_seurat_obj_wound)
+FeaturePlot(merged_seurat_obj_wound, features = "Sgms2", split.by = "condition")
+FeaturePlot(merged_seurat_obj_wound, features = "Pgk1", split.by = "condition")
+VlnPlot(merged_seurat_obj_wound, features = c("Pgk1", "Tpi1", "Aldoa", split.by = "condition"))
+VlnPlot(merged_seurat_obj_wound, features = c("Pgk1", "Tpi1", "Aldoa"), split.by = "condition"), pt.size=0)
+VlnPlot(merged_seurat_obj_wound, features = c("Pgk1", "Tpi1", "Aldoa"), split.by = "condition", pt.size=0)
+View(SeuratMac)
+DimPlot(SeuratMac)
+View(SeuratMac)
+SeuratMac_majorclusters <- subset(SeuratMac, subset = seurat_clusters == c("0", "1"))
+library(Seurat)
+library(ggplot2)
+library(viridis)
+FeaturePlot(SeuratMac, features = "Sgms2", split.by = "condition")
+VlnPlot(merged_seurat_obj_wound, features = c("Gpx3", "Gpx1", "Anpep", "Idh1", "Pgd", "Gclm",
+"Arg1", "Glul", "P4ha2", "Ldha"), split.by = "condition"))
+DotPlot(merged_seurat_obj_wound, features = c("Gpx3", "Gpx1", "Anpep", "Idh1", "Pgd", "Gclm",
+"Arg1", "Glul", "P4ha2", "Ldha"), split.by = "condition")
+dot_plot <- DotPlot(SeuratMac, features = c("Gpx3", "Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "P4ha2", "Ldha")+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = c("Gpx3", "Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "P4ha2", "Ldha")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(merged_seurat_obj_wound, features = c("Gpx3", "Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "P4ha2", "Ldha")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(merged_seurat_obj_wound, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "P4ha2", "Ldha")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(merged_seurat_obj_wound, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "P4ha2")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(SeuratMac, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+Seuratmac_majorclust <-subset(SeuratMac, subset = seurat_clusters == c("0", "1"))
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "P4ha2")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Il1b", "Nos2", "Tnf", "Cd86", "Mrc1", "Retnla", "Cd163", "Arg1", "Vegfa")) +
++ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
++ scale_color_viridis_c()
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Il1b", "Nos2", "Tnf", "Cd86", "Mrc1", "Retnla", "Cd163", "Arg1", "Vegfa")) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(dot_plot)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Il1b", "Nos2", "Tnf", "Cd86", "Mrc1", "Retnla", "Cd163", "Arg1", "Vegfa")) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+FeaturePlot(Seuratmac_majorclust, features = "Adgre1")
+FeaturePlot(Seuratmac_majorclust, features = "Ly6c2")
+FeaturePlot(Seuratmac_majorclust, features = "Nos2")
+View(markers_mac)
+markers_mac_majclusters <- FindAllMarkers(Seuratmac_majorclust)
+Seuratmac_majorclust <- JoinLayers(Seuratmac_majorclust)
+FeaturePlot(Seuratmac_majorclust, features = "Ly6c")
+FeaturePlot(Seuratmac_majorclust, features = "Ly6G")
+FeaturePlot(Seuratmac_majorclust, features = "Ly6g")
+FeaturePlot(Seuratmac_majorclust, features = "Cd11b")
+FeaturePlot(Seuratmac_majorclust, features = "Mpo")
+FeaturePlot(Seuratmac_majorclust, features = "Csf3r")
+FeaturePlot(Seuratmac_majorclust, features = "Il1b")
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Ly6c2", "Cd86", "Adgre1", "Cd163", "Ly6g", "Csf3r", "Cxcr2")) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Ly6c2", "Cd86", "Adgre1", "Tnf", "Ly6g", "Csf3r", "Cxcr2")) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Ly6c2", "Cd86", "Adgre1", "Ly6g", "Csf3r", "Cxcr2")) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+Seuratmac_only <-subset(SeuratMac, subset = seurat_clusters == c("0"))
+DotPlot(Seuratmac_only)
+DotPlot(Seuratmac_only)
+View(Seuratmac_only)
+Seuratmac_only <- ScaleData(Seuratmac_only)
+Seuratmac_only <-subset(Seuratmac_majorclust, subset = seurat_clusters == c("0"))
+DotPlot(Seuratmac_only)
+DimPlot(Seuratmac_only)
+Seuratmac_only <- ScaleData(Seuratmac_only)
+Seuratmac_only <- RunPCA(Seuratmac_only)
+SeuratMac <- RunUMAP(Seuratmac_only, dims = 1:10)
+Seuratmac_only <- RunUMAP(Seuratmac_only, dims = 1:10)
+Seuratmac_only <- FindNeighbors(Seuratmac_only, dims = 1:10)
+Seuratmac_only <- FindClusters(Seuratmac_only, dims = 1:10)
+Seuratmac_only <- FindClusters(Seuratmac_only, resolution = 0.2)
+Seuratmac_only <- FindClusters(Seuratmac_only, resolution = 0.1)
+DimPlot(Seuratmac_only)
+Seuratmac_only <-subset(Seuratmac_only, subset = seurat_clusters == c("0", "2"))
+DimPlot(Seuratmac_only)
+Seuratmac_only <- RunUMAP(Seuratmac_only, dims = 1:10)
+Seuratmac_only <- FindNeighbors(Seuratmac_only, dims = 1:10)
+Seuratmac_only <- FindClusters(Seuratmac_only, resolution = 0.2)
+Seuratmac_only <- FindClusters(Seuratmac_only, resolution = 0.1)
+DimPlot(Seuratmac_only)
+View(Seuratmac_majorclust)
+View(Seuratmac_majorclust)
+View(SeuratMac)
+load("~/Desktop/control wound bed R files/48hr/48hr.Rproj")
+load("~/Desktop/control wound bed R files/48hr/data.RData")
+View(merged_seurat_obj_wound)
+View(seurat_subset)
+unique(seurat_subset, "condition")
+unique(seurat_object@meta.data$condition)
+nique(seurat_subset@meta.data$condition)
+unique(seurat_subset@meta.data$condition)
+DimPlot(seurat_subset)
+library(Seurat)
+library(ggplot2)
+DimPlot(seurat_subset)
+FeaturePlot(seurat_subset, features = "Ly6g")
+FeaturePlot(seurat_subset, features = "Csf3r")
+FeaturePlot(seurat_subset, features = "Adgre1")
+seurat_subset_mac <- subset(seurat_subset, subset = seurat_clusters == c("Macrophages"))
+seurat_subset_mac <- subset(seurat_subset, subset = merged_clusters == c("Macrophages"))
+DimPlot(seurat_subset_mac)
+seurat_subset_mac <- ScaleData(seurat_subset_mac)
+seurat_subset_mac <- RunPCA(seurat_subset_mac)
+seurat_subset_mac <- RunUMAP(seurat_subset_mac, dims= 1:5)
+seurat_subset_mac <- FindNeighbors(seurat_subset_mac, dims = 1:5)
+seurat_subset_mac <- FindClusters(seurat_subset_mac, dims = 1:5)
+seurat_subset_mac <- FindClusters(seurat_subset_mac, resolution = 0.2)
+DimPlot(seurat_subset_mac)
+seurat_subset_mac <- FindClusters(seurat_subset_mac, resolution = 0.1)
+DimPlot(seurat_subset_mac)
+FeaturePlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Mrc1"))
+FeaturePlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Mrc1, "Nos2""))
+FeaturePlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Mrc1, "Nos2"))
+FeaturePlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Mrc1", "Nos2"))
+FeaturePlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Mrc1", "Nos2", "Lyve1"))
+seurat_subset_mac <- FindClusters(seurat_subset_mac, resolution = 0.2)
+DotPlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Mrc1", "Nos2", "Lyve1"))
+DotPlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Arg1", Mrc1", "Retnla", "Cd163", "Nos2", "Il1b", "Ccl3", "Cd86"))
+DotPlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Arg1", "Mrc1", "Retnla", "Cd163", "Nos2", "Il1b", "Ccl3", "Cd86"))
+DoHeatmap(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Arg1", "Mrc1", "Retnla", "Cd163", "Nos2", "Il1b", "Ccl3", "Cd86"))
+DotPlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Arg1", "Mrc1", "Retnla", "Cd163", "Nos2", "Il1b", "Ccl3", "Cd86"))
+DotPlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Arg1", "Mrc1", "Retnla", "Cd163", "Nos2", "Il1b", "Ccl3", "Cd86"), split.by = "condition")
+DimPlot(seurat_subset_mac, split.by = "condition")
+FindMarkers(seurat_subset_mac)
+View(seurat_subset)
+View(seurat_subset_mac)
+DE_results_0v2 <- FindMarkers(seurat_subset_mac, ident.1 = "0", ident.2 = "2", group.by = "seurat_clusters")
+JoinLayers(seurat_subset_mac)
+DE_results_0v2 <- FindMarkers(seurat_subset_mac, ident.1 = "0", ident.2 = "2", group.by = "seurat_clusters")
+seurat_subset_mac <- JoinLayers(seurat_subset_mac)
+DE_results_0v2 <- FindMarkers(seurat_subset_mac, ident.1 = "0", ident.2 = "2", group.by = "seurat_clusters")
+View(DE_results_0v2)
+write.csv(DE_results_0v2, file = "DE_results_0v2_2448hrmacs.csv", row.names = TRUE)
+DE_results_24v48_mac <- FindMarkers(seurat_subset_mac, ident.1 = "24hr", ident.2 = "48", group.by = "condition")
+write.csv(DE_results_24v48_mac, file = "DE_results_24v48_mac_2448hrmacs.csv", row.names = TRUE)
+DotPlot(seurat_subset_mac, features = c("Adgre1", "Ly6c2", "Arg1", "Mrc1", "Nos2", "Il1b", "Ccl3", "Cd86")) + scale_color_viridis_c()
+dot_plot <- DotPlot(seurat_subset_mac, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls"), split.by = "condition" )) +
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls"), split.by = "condition")
+View(seurat_subset_mac)
+View(Seuratmac_only)
+View(seurat_subset_mac)
+dot_plot <- DotPlot(Seuratmac_majorclust, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2"), dot.scale = 10)
+print(dot_plot)
+dot_plot <- DotPlot(seurat_subset_mac, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls"), dot.scale = 20) +
++ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
++ scale_color_viridis_c()
+dot_plot <- DotPlot(seurat_subset_mac, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls"), dot.scale = 20)
++ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
++ scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(seurat_subset_mac, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls"), dot.scale = 210)
++ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+dot_plot <- DotPlot(seurat_subset_mac, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2", "Gls"), dot.scale = 10) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+dot_plot <- DotPlot(seurat_subset_mac, features = c("Gpx1", "Anpep", "Idh1", "Pgd", "Gclm", "Arg1", "Glul", "Anxa2"), dot.scale = 10) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+print(dot_plot)
+library(Seurat)
+FeaturePlot(Seuratmac_only, features = "Ccr1")
+library(viridis)
+FeaturePlot(Seuratmac_only, features = "Ccr1") + scale_color_viridis()
+FeaturePlot(merged_seurat_obj_wound, features = "Ccr1") + scale_color_viridis()
+FeaturePlot(Seuratmac_only, features = "Ccr1") + scale_color_viridis()
+FeaturePlot(seurat_subset_mac, features = "Ccr1") + scale_color_viridis()
+VlnPlot(Seuratmac_only, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"))
+VlnPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2")) + scale_color_viridis()
+VlnPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0) + scale_color_viridis()
+VlnPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0, split.by = "condition") + scale_color_viridis()
+VlnPlot(merged_seurat_obj_wound, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0, split.by = "condition") + scale_color_viridis()
+VlnPlot(seurat_obj24, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0, split.by = "condition") + scale_color_viridis()
+VlnPlot(merged_seurat_obj_wound, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0) + scale_color_viridis()
+DotPlot(merged_seurat_obj_wound, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0, split.by = "condition") + scale_color_viridis()
+dot_plot(merged_seurat_obj_wound, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0, split.by = "condition") + scale_color_viridis()
+dot_plot <- DotPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), dot.scale = 10, split.by = "condition") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_color_viridis_c()
+dot_plot <- DotPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), dot.scale = 10, split.by = "condition")  + scale_color_viridis_c()
+library(viridis)
+dot_plot <- DotPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), dot.scale = 10, split.by = "condition")  + scale_color_viridis_c()
+dot_plot <- DotPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), dot.scale = 10, split.by = "condition")  + scale_color_viridis()
+print(dot_plot)
+dot_plot <- DotPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), dot.scale = 10, split.by = "condition")
+print(dot_plot)
+VlnPlot(seurat_subset_mac, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0, split.by = "condition") + scale_color_viridis()
+DimPlot(seurat_subset_mac, features = "S100a8", split.by = "condition")
+View(seurat_subset_assay)
+View(Seuratmac_only)
+DimPlot(seurat_subset_mac, features = "S100a8",
+)
+FeaturePlot(seurat_subset_mac, features = "S100a8"
+)
+View(seurat_subset_mac)
+FeaturePlot(seurat_subset_mac, features = "S100a8", split.by = "condition")
+FeaturePlot(seurat_subset_mac, features = "S100a8", split.by = "condition") + scale_color_viridis()
+View(SeuratMac)
+View(merged_seurat_obj_wound)
+FeaturePlot(merged_seurat_obj_wound, features = "S100a8", split.by = "condition") + scale_color_viridis()
+merged_seurat_obj_wound24hr <- subset(merged_seurat_obj_wound, condition == "24hr")
+merged_seurat_obj_wound24hr <- subset(merged_seurat_obj_wound, condition == "48")
+merged_seurat_obj_wound24hr <- subset(merged_seurat_obj_wound, condition == "24hr")
+merged_seurat_obj_wound48hr <- subset(merged_seurat_obj_wound, condition == "48")
+FeaturePlot(merged_seurat_obj_wound24hr, features = "S100a8", split.by = "condition") + scale_color_viridis()
+FeaturePlot(merged_seurat_obj_wound48hr, features = "S100a8", split.by = "condition") + scale_color_viridis()
+VlnPlot(merged_seurat_obj_wound, features = c("S100a8", "S100a9", "Ccl3","Ccl4", "Ccl7", "Ccl10", "Cxcl2"), split.by = "condition") + scale_color_viridis()
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+split.by = "condition",
+layer = "data"
+) + scale_color_viridis()
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+split.by = "condition",
+layer = "counts"
+) + scale_color_viridis()
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+split.by = "condition",
+layer = "scale.data"
+) + scale_color_viridis()
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+split.by = "condition",
+layer = c("counts.1", "counts.2)
+) + scale_color_viridis()
+)
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+split.by = "condition",
+layer = c("counts.1", "counts.2")
+) + scale_color_viridis()
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+split.by = "condition",
+layer = c("scale.data.1", "scale.data.2")
+) + scale_color_viridis()
+VlnPlot(
+merged_seurat_obj_wound24hr,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2")
+) + scale_color_viridis()
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+split.by = "condition",
+layer = "counts.1"
+) + scale_color_viridis()
+DefaultAssay(merged_seurat_obj_wound)
+Assays(merged_seurat_obj_wound)
+layers(merged_seurat_obj_wound[["RNA"]])
+merged_seurat_obj_wound[["RNA"]]
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"),
+layer = "data.1" # Replace with your desired layer
+) + scale_color_viridis()
+# Temporarily replace the default "data" with "data.1"
+merged_seurat_obj_wound[["RNA"]]@data <- merged_seurat_obj_wound[["RNA"]]@layers[["data.1"]]
+merged_seurat_obj_wound <- SetAssayData(
+object = merged_seurat_obj_wound,
+assay = "RNA",
+layer = "data",
+new.data = GetAssayData(merged_seurat_obj_wound[["RNA"]], layer = "data.1")
+)
+VlnPlot(
+merged_seurat_obj_wound,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2")
+) + scale_color_viridis()
+VlnPlot(merged_seurat_obj_wound, features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"), pt.size = 0, split.by = "condition" ) + scale_color_viridis()
+merged_seurat_obj_wound <- SetAssayData(
+object = merged_seurat_obj_wound24hr,
+assay = "RNA",
+layer = "data",
+new.data = GetAssayData(merged_seurat_obj_wound24hr[["RNA"]], layer = "data.1")
+)
+VlnPlot(
+merged_seurat_obj_wound24hr,
+features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2")
+) + scale_color_viridis()
+DotPlot(merged_seurat_obj_wound24hr, features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2"))
+DotPlot(merged_seurat_obj_wound24hr, features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2")) + scale_color_viridis()
+DotPlot(merged_seurat_obj_wound48hr, features = c("S100a8", "S100a9", "Ccl3", "Ccl4", "Ccl7", "Ccl10", "Cxcl2")) + scale_color_viridis()
+View(expression_data24)
+View(expression_data36)
+View(expression_data48)
+View(markers)
+View(markers_mac)
+View(markers_mac_majclusters)
+View(merged_seurat_obj_wound)
+View(merged_seurat_obj_wound)
+save.image("~/Desktop/control wound bed R files/48hr/analysismacrophagesTING1.1425.RData")
+savehistory("~/Desktop/control wound bed R files/48hr/24_72hr Macs.Rhistory")
+
+
+    
